@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
     [SerializeField] private List<Sprite> doubleJumpSpriteList;
     [SerializeField] private List<Sprite> xraySpriteList;
     [SerializeField] private List<Sprite> stealthSpriteList;
-    public float timer = 0;
+    private float timer = 0;
 
 
     public void Start()
