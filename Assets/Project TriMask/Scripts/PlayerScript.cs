@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     [SerializeField] private InputActionReference _moveactions;
 
     public KeyCode _switchKey; //touche utilisée pour changer de mode 
-    public int _modeID = 0; // id du mode actuel (0 : double jamp, 1 : invisibilité, 2 : rayon X
+    public int _modeID = 0; // id du mode actuel (0 : double jump, 1 : invisibilité, 2 : rayon X
     [SerializeField] private SpriteRenderer uiSprite;
     [SerializeField] private SpriteRenderer playerSprite;
     private List<Sprite> currentSpriteList ;
@@ -86,7 +86,7 @@ public class Player : MonoBehaviour
                 {
                     _direction = Vector2.zero;
 
-        }
+                }
             }
 
             private void OnEnable()
