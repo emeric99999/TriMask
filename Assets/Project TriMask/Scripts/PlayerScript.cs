@@ -24,12 +24,14 @@ public class Player : MonoBehaviour
     [SerializeField] private Rigidbody2D _playerRigidbody;
     [SerializeField] private BoxCollider2D _playerCollider;
     private float timer = 0;
-    [SerializeField] private float animTime; 
+    [SerializeField] private float animTime;
+    private float floorY;
 
 
     public void Start()
     {
         currentSpriteList = doubleJumpSpriteList;
+        floorY = transform.position.y;
     }
     private void Update()
     {
@@ -73,6 +75,16 @@ public class Player : MonoBehaviour
             }
 
             else timer = 0;
+
+            if (_direction == Vector2.left)
+            {
+                playerSprite.flipX = true;
+            }
+
+            else if (_direction == Vector2.right)
+            {
+                playerSprite.flipX = false;
+            }
         }
 
         else playerSprite.sprite = currentSpriteList[0];
@@ -107,12 +119,12 @@ public class Player : MonoBehaviour
 
         private void Jump ()
         {
-        if (Input.GetKeyDown(KeyCode.W))
+        if (transform.position.y <= floorY)
         {
-            _playerRigidbody.AddForce(7*Vector2.up,ForceMode2D.Impulse);
-
-     
-
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                _playerRigidbody.AddForce(7 * Vector2.up, ForceMode2D.Impulse);
+            }
         }
         }
 
