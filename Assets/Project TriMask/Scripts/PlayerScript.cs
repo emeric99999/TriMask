@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,20 +27,36 @@ public class Player : MonoBehaviour
     private float timer = 0;
     [SerializeField] private float animTime;
     private float floorY;
+    private bool _hasDoubleJump = true;
+    public float limity;
+    private float timerInvisibility = 0;
+    private Color fade;
+    private Color noFade;
+    public static bool playerIsInvisibile = false;
+    public bool xrayActive = false;
+    [SerializeField] private SpriteRenderer backgroundSprite;
+    
 
 
     public void Start()
     {
         currentSpriteList = doubleJumpSpriteList;
         floorY = transform.position.y;
+        fade = playerSprite.color;
+        noFade = playerSprite.color;
+        fade.a = 0.5f;
+        _playerRigidbody.freezeRotation = true;
     }
     private void Update()
     {
-        Move();
-        Jump();
-        if (_modeID == 0) { } //doublejump 
-        else if (_modeID == 1) { } //invisibility 
-        else { } //detection
+        if (!xrayActive)
+        {
+            Move();
+            Jump();
+        }
+        if (_modeID == 0) {DoubleJump(); } //doublejump 
+        else if (_modeID == 1) { Invisible();  } //invisibility 
+        else { X_ray(); } //detection
 
         setModeID();
 
@@ -68,9 +85,9 @@ public class Player : MonoBehaviour
             if (timer < animTime)
             {
                 timer += Time.deltaTime;
-                if (timer < animTime/4) playerSprite.sprite = currentSpriteList[1];
-                else if (timer < animTime/2) playerSprite.sprite = currentSpriteList[2];
-                else if (timer < 3*animTime/4) playerSprite.sprite = currentSpriteList[3];
+                if (timer < animTime / 4) playerSprite.sprite = currentSpriteList[1];
+                else if (timer < animTime / 2) playerSprite.sprite = currentSpriteList[2];
+                else if (timer < 3 * animTime / 4) playerSprite.sprite = currentSpriteList[3];
                 else playerSprite.sprite = currentSpriteList[4];
             }
 
@@ -117,8 +134,8 @@ public class Player : MonoBehaviour
         _moveactions.action.canceled -= OnMoveAction;
     }
 
-        private void Jump ()
-        {
+    private void Jump()
+    {
         if (transform.position.y <= floorY)
         {
             if (Input.GetKeyDown(KeyCode.W))
@@ -126,8 +143,71 @@ public class Player : MonoBehaviour
                 _playerRigidbody.AddForce(7 * Vector2.up, ForceMode2D.Impulse);
             }
         }
+        if (transform.position.y > floorY + limity)
+        {
+            _playerRigidbody.velocity = Vector2.zero;
+            Debug.Log("limite");
         }
+    }
+
+    private void DoubleJump()
+    {
+
+        if (transform.position.y > floorY && Input.GetKeyDown(KeyCode.W) && _hasDoubleJump)
+        {
+            _playerRigidbody.AddForce(9 * Vector2.up, ForceMode2D.Impulse);
+            _hasDoubleJump = false;
+        }
+        if (transform.position.y <= floorY)
+        {
+            _hasDoubleJump = true;
+        }
+    }
 
 
+
+    private void Invisible()
+    {
+        if ( Input.GetKeyDown(KeyCode.E))
+        {
+            playerIsInvisibile = true;
+        }
+            if (playerIsInvisibile)
+            {
+                if (timerInvisibility < 2)
+                {
+                    timerInvisibility += Time.deltaTime;
+                    playerSprite.color = fade;
+                }
+
+            if (timerInvisibility >= 2 || Input.GetKeyDown(_switchKey))
+                {
+                    timerInvisibility = 0;
+                    playerSprite.color = noFade;
+                    playerIsInvisibile = false;
+                }
+            }
+        
+    }
+
+    private void X_ray()
+    {
+        if (xrayActive)
+        {
+            backgroundSprite.color = fade;
 
         }
+        if (!xrayActive && Input.GetKeyDown(KeyCode.E))
+        {
+            xrayActive = true;
+            playerSprite.sprite = currentSpriteList[0];
+        }
+        else if (xrayActive && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(_switchKey)))
+          {
+            xrayActive = false;
+            backgroundSprite.color = noFade;
+          }
+        
+    }
+
+}
