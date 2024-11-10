@@ -10,6 +10,7 @@ public class camera : MonoBehaviour
     [SerializeField] private SpriteRenderer detectionZone;
     private Color cameraColorDetected;
     private Color cameraColorNotDetected;
+    private float timerCamera;
     // Start is called before the first frame update
     void Start()
     {
@@ -40,6 +41,15 @@ public class camera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (!detectionCamera.isTrigger && timerCamera < 2)
+        {
+            timerCamera += Time.deltaTime;
+        }
+        else if (!detectionCamera.isTrigger && timerCamera >= 2)
+        {
+            detectionCamera.isTrigger = true;
+            detectionZone.color = cameraColorNotDetected;
+        }
+
     }
 }

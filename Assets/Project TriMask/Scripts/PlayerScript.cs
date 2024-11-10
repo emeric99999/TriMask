@@ -37,6 +37,10 @@ public class Player : MonoBehaviour
     [SerializeField] private SpriteRenderer backgroundSprite;
     
 
+    public static void GameOver()
+    {
+        Debug.Log("perdu");
+    }
 
     public void Start()
     {

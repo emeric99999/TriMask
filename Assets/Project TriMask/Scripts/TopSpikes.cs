@@ -8,6 +8,7 @@ public class TopSpikes : MonoBehaviour
     [SerializeField] BoxCollider2D detectionZone;
     [SerializeField] Rigidbody2D spikesBody;
     public float spikeSpeed;
+    [SerializeField] BoxCollider2D hitzone;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,7 +18,8 @@ public class TopSpikes : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (transform.position.y <= -1.260641)
+        { GameObject.Destroy(hitzone); }
     }
     
     private void OnTriggerEnter2D(UnityEngine.Collider2D collision)
@@ -26,6 +28,25 @@ public class TopSpikes : MonoBehaviour
         {
             spikesBody.gravityScale = spikeSpeed;
         }
+    }
+
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.CompareTag("Player") && !Player.playerIsInvisibile)
+        {
+            spikesBody.gravityScale = spikeSpeed;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Player") && !Player.playerIsInvisibile)
+        {
+            Player.GameOver();
+        }
+
+       
     }
 
 }
