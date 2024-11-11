@@ -45,6 +45,7 @@ public class Player : MonoBehaviour
     private float invisibleCoolDown = 4;
     private float lastCheckpoint;
     [SerializeField] Player player;
+    public float dashDuration;
     
     
 
@@ -239,24 +240,32 @@ public class Player : MonoBehaviour
     private void Dash()
     {
         
-        if (Input.GetKeyDown(KeyCode.Q) && dashCooldown >= 1)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && dashCooldown >= 0.8f)
 
         {
             isDashing = true;
             dashCooldown = 0;
         }
-        else if (dashCooldown < 1)
+        else if (dashCooldown < 0.8f)
         { dashCooldown += Time.deltaTime; }
             if (!playerSprite.flipX && isDashing)
                 _playerRigidbody.velocity = 15 * Vector2.right;
             else if (playerSprite.flipX && isDashing)
                 _playerRigidbody.velocity = 15 * Vector2.left;
-            if (isDashing && dashTimer < 0.25f)
+            if (isDashing && dashTimer < dashDuration)
             {
+            if (dashTimer < 0.05f)
+            { playerSprite.sprite = currentSpriteList[5]; }
+            else if (dashTimer < 0.25f)
+            { playerSprite.sprite = currentSpriteList[6]; }
+            else if (dashTimer < 0.35f)
+            { playerSprite.sprite = currentSpriteList[7]; }
+            else if (dashTimer < 0.5f)
+            { playerSprite.sprite = currentSpriteList[8]; }
                 dashTimer += Time.deltaTime;
                 _playerRigidbody.constraints = dashConstraints;
             }
-            else if (isDashing && dashTimer >= 0.25f)
+            else if (isDashing && dashTimer >= dashDuration)
             { 
             _playerRigidbody.constraints = normalConstraints; isDashing = false;
             dashTimer = 0;

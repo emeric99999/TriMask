@@ -711,18 +711,30 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 3448644a3df4d974a9c9516b8c4ec7de, type: 3}
   - {fileID: 21300000, guid: ccfcb05c572683f41971c9596c04ec25, type: 3}
   - {fileID: 21300000, guid: a77a646863b53b544b6b3bffd55c2cff, type: 3}
+  - {fileID: 21300000, guid: 97f77607c1d9d8249b282f2dd2a170c4, type: 3}
+  - {fileID: 21300000, guid: 8b62b944ab57db94f983c6d4247fd963, type: 3}
+  - {fileID: 21300000, guid: 1fc1be908b3c619429ec8d93724b63fe, type: 3}
+  - {fileID: 21300000, guid: 99c326967a2056b4eb19a6dfb9bac500, type: 3}
   xraySpriteList:
   - {fileID: 21300000, guid: 49d78b5f5e831f541861e9461d3506c8, type: 3}
   - {fileID: 21300000, guid: 756682a19a6ae584ab64e7a0ee4e5bb3, type: 3}
   - {fileID: 21300000, guid: fbf70c0d7e80d1a4689a577c15000536, type: 3}
   - {fileID: 21300000, guid: d0e67081eed7417478fbcdd95c980851, type: 3}
   - {fileID: 21300000, guid: b3882b30875f1334a8206cdb2dce4e58, type: 3}
+  - {fileID: 21300000, guid: 98bbf62aadd438a46b8980c443e78680, type: 3}
+  - {fileID: 21300000, guid: 6a722375aa7ced140939d89947bf0a5a, type: 3}
+  - {fileID: 21300000, guid: 9a19d672aeeab9a42b8cd46df5539302, type: 3}
+  - {fileID: 21300000, guid: 2bd82805a09818b47a27b925ec60b2a2, type: 3}
   stealthSpriteList:
   - {fileID: 21300000, guid: db67cfab1dfecb7428ff7e789862c77c, type: 3}
   - {fileID: 21300000, guid: bd8422614e340e44b81072f6ed502eb6, type: 3}
   - {fileID: 21300000, guid: 28607b033123a3a4280204a1c269c72b, type: 3}
   - {fileID: 21300000, guid: 32ef32f823e2b0b4da481be41937b647, type: 3}
   - {fileID: 21300000, guid: eb16efd4984a6584986d5a73f2ec82ac, type: 3}
+  - {fileID: 21300000, guid: 27000202b7a58694b80f13aef7436ce1, type: 3}
+  - {fileID: 21300000, guid: 91a308992a67b9b4091458915303ade0, type: 3}
+  - {fileID: 21300000, guid: 0e6e83a3805fcd940a1bd990a5e356a0, type: 3}
+  - {fileID: 21300000, guid: 95e6c764d7eb6d745a6a794539b6e7e6, type: 3}
   _playerRigidbody: {fileID: 1040985402}
   _playerCollider: {fileID: 0}
   animTime: 0.8
@@ -730,6 +742,7 @@ MonoBehaviour:
   xrayActive: 0
   backgroundSprite: {fileID: 743871688}
   player: {fileID: 0}
+  dashDuration: 0.5
 --- !u!50 &1040985402
 Rigidbody2D:
   serializedVersion: 4
