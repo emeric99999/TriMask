@@ -1,6 +1,8 @@
+using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -35,12 +37,23 @@ public class Player : MonoBehaviour
     public static bool playerIsInvisibile = false;
     public bool xrayActive = false;
     [SerializeField] private SpriteRenderer backgroundSprite;
+    private float dashTimer = 0;
+    private RigidbodyConstraints2D dashConstraints;
+    private RigidbodyConstraints2D normalConstraints;
+    private bool isDashing;
+    private float dashCooldown = 1;
+    private float invisibleCoolDown = 4;
+    private float lastCheckpoint;
+    [SerializeField] Player player;
+    
     
 
-    public static void GameOver()
+    public void GameOver()
     {
-        Debug.Log("perdu");
+        transform.position = new Vector3(lastCheckpoint, transform.position.y, transform.position.z);
     }
+
+    
 
     public void Start()
     {
@@ -50,13 +63,19 @@ public class Player : MonoBehaviour
         noFade = playerSprite.color;
         fade.a = 0.5f;
         _playerRigidbody.freezeRotation = true;
+        dashConstraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+        normalConstraints = _playerRigidbody.constraints;
     }
     private void Update()
     {
         if (!xrayActive)
         {
-            Move();
-            Jump();
+            if (!isDashing)
+            {
+                Move();
+                Jump();
+            }
+            Dash();
         }
         if (_modeID == 0) {DoubleJump(); } //doublejump 
         else if (_modeID == 1) { Invisible();  } //invisibility 
@@ -172,12 +191,15 @@ public class Player : MonoBehaviour
 
     private void Invisible()
     {
-        if ( Input.GetKeyDown(KeyCode.E))
+        if ( Input.GetKeyDown(KeyCode.E) && invisibleCoolDown >= 4)
         {
             playerIsInvisibile = true;
+            invisibleCoolDown = 0;
         }
+        else if (invisibleCoolDown < 4)
+        { invisibleCoolDown += Time.deltaTime; }
             if (playerIsInvisibile)
-            {
+            {   
                 if (timerInvisibility < 2)
                 {
                     timerInvisibility += Time.deltaTime;
@@ -214,4 +236,48 @@ public class Player : MonoBehaviour
         
     }
 
+    private void Dash()
+    {
+        
+        if (Input.GetKeyDown(KeyCode.Q) && dashCooldown >= 1)
+
+        {
+            isDashing = true;
+            dashCooldown = 0;
+        }
+        else if (dashCooldown < 1)
+        { dashCooldown += Time.deltaTime; }
+            if (!playerSprite.flipX && isDashing)
+                _playerRigidbody.velocity = 15 * Vector2.right;
+            else if (playerSprite.flipX && isDashing)
+                _playerRigidbody.velocity = 15 * Vector2.left;
+            if (isDashing && dashTimer < 0.25f)
+            {
+                dashTimer += Time.deltaTime;
+                _playerRigidbody.constraints = dashConstraints;
+            }
+            else if (isDashing && dashTimer >= 0.25f)
+            { 
+            _playerRigidbody.constraints = normalConstraints; isDashing = false;
+            dashTimer = 0;
+             _playerRigidbody.velocity = Vector2.zero; 
+            }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Respawn") && transform.position.x > lastCheckpoint)
+        { lastCheckpoint = transform.position.x; }
+        
+       if (collision.collider.CompareTag("Spikes") && !Player.playerIsInvisibile)
+          {
+              GameOver();
+          }
+
+
+        
+    }
+
+
 }
+

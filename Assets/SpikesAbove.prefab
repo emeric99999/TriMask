@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 386056308454637746}
   m_Layer: 0
   m_Name: SpikesAbove
-  m_TagString: Untagged
+  m_TagString: Spikes
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -193,6 +193,7 @@ MonoBehaviour:
   detectionZone: {fileID: 7054100871787362245}
   spikesBody: {fileID: 386056308454637746}
   spikeSpeed: 3
+  hitzone: {fileID: 8518187969354194629}
 --- !u!50 &386056308454637746
 Rigidbody2D:
   serializedVersion: 4

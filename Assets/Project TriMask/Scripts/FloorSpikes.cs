@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FloorSpikes : MonoBehaviour
 {
-
+    [SerializeField] Player player;
     [SerializeField] BoxCollider2D detectionZone;
     // Start is called before the first frame update
     void Start()
@@ -16,7 +16,7 @@ public class FloorSpikes : MonoBehaviour
     {
         if (collision.collider.CompareTag("Player"))
         {
-            Player.GameOver();
+            player.GameOver();
         }
     }
 
