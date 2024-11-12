@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Transactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -46,7 +47,9 @@ public class Player : MonoBehaviour
     private float lastCheckpoint;
     [SerializeField] Player player;
     public float dashDuration;
-    
+    private float timerJump;
+    private bool landing = false;
+    private float landingLag = 0;
     
 
     public void GameOver()
@@ -66,19 +69,26 @@ public class Player : MonoBehaviour
         _playerRigidbody.freezeRotation = true;
         dashConstraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         normalConstraints = _playerRigidbody.constraints;
+        
     }
     private void Update()
     {
         if (!xrayActive)
         {
-            if (!isDashing)
+            if (!isDashing && !(landing && transform.position.y <= floorY))
             {
                 Move();
                 Jump();
             }
+            else if (landing && transform.position.y <= floorY)
+            { 
+                if (landingLag < 0.2f) { landingLag += Time.deltaTime; playerSprite.sprite = currentSpriteList[12]; } 
+                else { landing = false; landingLag = 0; }
+            }
             Dash();
         }
-        if (_modeID == 0) {DoubleJump(); } //doublejump 
+        
+        if (_modeID == 0 && !isDashing) {DoubleJump(); } //doublejump 
         else if (_modeID == 1) { Invisible();  } //invisibility 
         else { X_ray(); } //detection
 
@@ -165,7 +175,19 @@ public class Player : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.W))
             {
                 _playerRigidbody.AddForce(7 * Vector2.up, ForceMode2D.Impulse);
+                timerJump = 0;
+                landing = true;
             }
+            
+            
+        }
+        else
+        {
+            timerJump += Time.deltaTime;
+            if (timerJump <= 0.5f) { playerSprite.sprite = currentSpriteList[9]; }
+            else if (timerJump <= 0.7f) { playerSprite.sprite = currentSpriteList[10]; }
+            else  { playerSprite.sprite = currentSpriteList[11]; }
+            
         }
         if (transform.position.y > floorY + limity)
         {
@@ -174,6 +196,7 @@ public class Player : MonoBehaviour
         }
     }
 
+
     private void DoubleJump()
     {
 
@@ -181,6 +204,19 @@ public class Player : MonoBehaviour
         {
             _playerRigidbody.AddForce(9 * Vector2.up, ForceMode2D.Impulse);
             _hasDoubleJump = false;
+            timerJump = 0;
+        }
+        if (!_hasDoubleJump)
+        {
+            timerJump += Time.deltaTime;
+            if (timerJump <= 0.15f) { playerSprite.sprite = currentSpriteList[13]; }
+            else if (timerJump <= 0.30f) { playerSprite.sprite = currentSpriteList[14]; }
+            else if (timerJump <= 0.45f) { playerSprite.sprite = currentSpriteList[15]; }
+            else { playerSprite.sprite = currentSpriteList[16]; }
+            
+
+
+
         }
         if (transform.position.y <= floorY)
         {
