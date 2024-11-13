@@ -36,6 +36,7 @@ public class TopSpikes : MonoBehaviour
         if (collision.CompareTag("Player") && !Player.playerIsInvisibile)
         {
             spikesBody.gravityScale = spikeSpeed;
+
         }
     }
 
@@ -54,6 +55,14 @@ public class TopSpikes : MonoBehaviour
         {
             hitzone.enabled = false; 
             spikesSprite.enabled = false; 
+        }
+        if (collision.collider.CompareTag("Player"))
+        {
+            transform.position = positionInitiale;
+            hitzone.enabled = true;
+            spikesSprite.enabled = true;
+            spikesBody.gravityScale = 0;
+            spikesBody.velocity = Vector2.zero;
         }
     }
 
