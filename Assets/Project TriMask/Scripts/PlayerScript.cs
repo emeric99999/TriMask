@@ -8,6 +8,7 @@ using TMPro;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -50,8 +51,8 @@ public class Player : MonoBehaviour
     private bool isDashing;
     private float dashCooldown = 1;
     private float invisibleCoolDown = 4;
-    private float lastCheckpointX;
-    private float lastCheckpointY;
+    public static float lastCheckpointX;
+    public static float lastCheckpointY;
     [SerializeField] Player player;
     public float dashDuration;
     private float timerJump;
@@ -66,18 +67,25 @@ public class Player : MonoBehaviour
     [SerializeField] private TextMeshPro text2;
     [SerializeField] private TextMeshPro text3;
     private Vector2 velolcityPlayer;
-    
+    private bool win = false;
+    [SerializeField] private TextMeshPro winText;
+    private float escapeTimer = 0;
+    [SerializeField] private TextMeshPro menuText;
+    [SerializeField] private TextMeshPro timerText;
+
+
 
     public void GameOver()
     {
         transform.position = new Vector3(lastCheckpointX, lastCheckpointY, transform.position.z);
+       
     }
 
-    
+
 
     public void Start()
     {
-        mask1Sprite.sprite = maskSprites[0]; 
+        mask1Sprite.sprite = maskSprites[0];
         mask2Sprite.sprite = maskSprites[1];
         mask3Sprite.sprite = maskSprites[2];
         currentSpriteList = doubleJumpSpriteList;
@@ -88,48 +96,54 @@ public class Player : MonoBehaviour
         _playerRigidbody.freezeRotation = true;
         dashConstraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         normalConstraints = _playerRigidbody.constraints;
-        
+        winText.text = "Escape in 2m30 !";
     }
     private void Update()
     {
 
         if (!termine && !pause)
         {
+            timerText.text = (Math.Round(escapeTimer*100)/100).ToString();
+            escapeTimer += Time.deltaTime;
+            if (escapeTimer < 3) { winText.enabled = true; }
+            if (escapeTimer > 3 ) { winText.enabled = false; }
+            if (escapeTimer > 150) termine = true;
             velolcityPlayer = _playerRigidbody.velocity;
             uiSprite.enabled = true; mask1Sprite.enabled = false; mask2Sprite.enabled = false; mask3Sprite.enabled = false;
             text1.enabled = false; text2.enabled = false; text3.enabled = false;
 
-        if (!xrayActive)
-        {
-            if (!isDashing && !(landing && landed))
+            if (!xrayActive)
             {
-                Move();
-                Jump();
-            }
-            else if (landing && landed)
-            {
-                if (landingLag < 0.1f) { landingLag += Time.deltaTime; playerSprite.sprite = currentSpriteList[12]; }
-                else { landing = false; landingLag = 0; }
-            }
-            Dash();
+                if (!isDashing && !(landing && landed))
+                {
+                    Move();
+                    Jump();
+                }
+                else if (landing && landed)
+                {
+                    if (landingLag < 0.1f) { landingLag += Time.deltaTime; playerSprite.sprite = currentSpriteList[12]; }
+                    else { landing = false; landingLag = 0; }
+                }
+                Dash();
 
 
-            if (_modeID == 0 && !isDashing) { DoubleJump(); } //doublejump 
-            else if (_modeID == 1) { Invisible(); } //invisibility 
+                if (_modeID == 0 && !isDashing) { DoubleJump(); } //doublejump 
+                else if (_modeID == 1) { Invisible(); } //invisibility 
+
+            }
+
+            if (_modeID == 2) { X_ray(); } //detection
+            setModeID();
+            if (Input.GetKeyDown(KeyCode.Escape))
+                pause = true;
+
+
 
         }
 
-        if (_modeID == 2) { X_ray(); } //detection
-        setModeID();
-            if (Input.GetKeyDown(KeyCode.Escape))
-                pause = true;
-           
-
-    }
-
         else if (pause)
         {
-            text1.enabled = true; 
+            text1.enabled = true;
             text2.enabled = true;
             text3.enabled = true;
             uiSprite.enabled = false;
@@ -138,18 +152,33 @@ public class Player : MonoBehaviour
             mask3Sprite.enabled = true;
             _playerRigidbody.velocity = Vector2.zero;
             _playerRigidbody.gravityScale = 0;
+            menuText.enabled = true;
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 _playerRigidbody.gravityScale = 2.5f;
                 _playerRigidbody.velocity = velolcityPlayer;
+                menuText.enabled = false;
                 pause = false;
 
             }
+            else if (Input.GetKeyDown(KeyCode.Space)) { SceneManager.LoadScene("Menu"); }
+            
         }
         else
         {
-            
+            _playerRigidbody.velocity = Vector2.zero;
+            _playerRigidbody.gravityScale = 0;
+            menuText.enabled = true;
+            menuText.text = "Press escape to return to the menu";
+            if (win)
+            { winText.enabled = true; winText.text = "Gentlemask escaped!"; }
+            else { winText.enabled = true; winText.text = "Gentlemask was too slow..."; }
+            if (Input.GetKeyDown (KeyCode.Escape))
+            {
+                SceneManager.LoadScene("Menu");
+            }
+
         }
 
     }
@@ -157,7 +186,8 @@ public class Player : MonoBehaviour
     private void setModeID()   // fonction qui change le _modeID lorsque la touche switch est pressée
     {
         if (Input.GetKeyDown(_switchKey))
-        { _modeID += 1;
+        {
+            _modeID += 1;
             _modeID = _modeID % 3;
             if (_modeID == 0) { uiSprite.sprite = maskSprites[0]; currentSpriteList = doubleJumpSpriteList; }
             else if (_modeID == 1) { uiSprite.sprite = maskSprites[1]; currentSpriteList = stealthSpriteList; } //j'ai inversé les deux listes à leur création, my bad ^^l
@@ -232,11 +262,11 @@ public class Player : MonoBehaviour
             {
                 _playerRigidbody.AddForce(14 * Vector2.up, ForceMode2D.Impulse);
                 timerJump = 0;
-                
+
                 landed = false;
             }
-            
-            
+
+
         }
         else
         {
@@ -244,21 +274,21 @@ public class Player : MonoBehaviour
             timerJump += Time.deltaTime;
             if (timerJump <= 0.5f) { playerSprite.sprite = currentSpriteList[9]; }
             else if (timerJump <= 0.7f) { playerSprite.sprite = currentSpriteList[10]; }
-            else  { playerSprite.sprite = currentSpriteList[11]; }
-            
+            else { playerSprite.sprite = currentSpriteList[11]; }
+
         }
         //if (transform.position.y > floorY + limity)
         //{
-          //  _playerRigidbody.velocity = Vector2.zero;
-           // Debug.Log("limite");
-       // }
+        //  _playerRigidbody.velocity = Vector2.zero;
+        // Debug.Log("limite");
+        // }
     }
 
 
     private void DoubleJump()
     {
 
-        if (landing &&!landed  && Input.GetKeyDown(KeyCode.W) && _hasDoubleJump)
+        if (landing && !landed && Input.GetKeyDown(KeyCode.W) && _hasDoubleJump)
         {
             _playerRigidbody.velocity = Vector2.zero;
             _playerRigidbody.AddForce(15 * Vector2.up, ForceMode2D.Impulse);
@@ -273,7 +303,7 @@ public class Player : MonoBehaviour
             else if (timerJump <= 0.75f) { playerSprite.sprite = currentSpriteList[15]; }
             else if (timerJump <= 1f) { playerSprite.sprite = currentSpriteList[16]; }
             else { playerSprite.sprite = currentSpriteList[11]; }
-            
+
 
 
 
@@ -288,33 +318,37 @@ public class Player : MonoBehaviour
 
     private void Invisible()
     {
-        if ( Input.GetKeyDown(KeyCode.E) && invisibleCoolDown >= 4)
+        if (Input.GetKeyDown(KeyCode.E) && invisibleCoolDown >= 4)
         {
             playerIsInvisibile = true;
             invisibleCoolDown = 0;
         }
-         else if (invisibleCoolDown < 4)
-             { invisibleCoolDown += Time.deltaTime; }
-            if (playerIsInvisibile)
-            {   if (timerInvisibility < 0.1)
-            { timerInvisibility += Time.deltaTime;
-            playerSprite.sprite = currentSpriteList[13];}
-            else if (timerInvisibility < 0.2)
-            { timerInvisibility += Time.deltaTime;  playerSprite.sprite = currentSpriteList[14]; }
-                else if (timerInvisibility < 2.2f)
-                {
-                    timerInvisibility += Time.deltaTime;
-                    playerSprite.color = fade;
-                }
-
-            if (timerInvisibility >= 2.2f || Input.GetKeyDown(_switchKey))
-                {
-                    timerInvisibility = 0;
-                    playerSprite.color = noFade;
-                    playerIsInvisibile = false;
-                }
+        else if (invisibleCoolDown < 4)
+        { invisibleCoolDown += Time.deltaTime; }
+        if (playerIsInvisibile)
+        {
+            if (timerInvisibility < 0.1)
+            {
+                timerInvisibility += Time.deltaTime;
+                playerSprite.sprite = currentSpriteList[13];
             }
-        
+            else if (timerInvisibility < 0.3)
+            { timerInvisibility += Time.deltaTime; playerSprite.sprite = currentSpriteList[14]; }
+            else if (timerInvisibility < 0.4) { playerSprite.sprite = currentSpriteList[13]; timerInvisibility += Time.deltaTime; }
+            else if (timerInvisibility < 2.4f)
+            {
+                timerInvisibility += Time.deltaTime;
+                playerSprite.color = fade;
+            }
+
+            if (timerInvisibility >= 2.4f || Input.GetKeyDown(_switchKey))
+            {
+                timerInvisibility = 0;
+                playerSprite.color = noFade;
+                playerIsInvisibile = false;
+            }
+        }
+
     }
 
     private void X_ray()
@@ -345,12 +379,12 @@ public class Player : MonoBehaviour
 
 
         }
-        
+
     }
 
     private void Dash()
     {
-        
+
         if (Input.GetKeyDown(KeyCode.LeftShift) && dashCooldown >= 0.8f)
 
         {
@@ -359,12 +393,12 @@ public class Player : MonoBehaviour
         }
         else if (dashCooldown < 0.8f)
         { dashCooldown += Time.deltaTime; }
-            if (!playerSprite.flipX && isDashing)
-                _playerRigidbody.velocity = 15 * Vector2.right;
-            else if (playerSprite.flipX && isDashing)
-                _playerRigidbody.velocity = 15 * Vector2.left;
-            if (isDashing && dashTimer < dashDuration)
-            {
+        if (!playerSprite.flipX && isDashing)
+            _playerRigidbody.velocity = 15 * Vector2.right;
+        else if (playerSprite.flipX && isDashing)
+            _playerRigidbody.velocity = 15 * Vector2.left;
+        if (isDashing && dashTimer < dashDuration)
+        {
             if (dashTimer < 0.05f)
             { playerSprite.sprite = currentSpriteList[5]; }
             else if (dashTimer < 0.25f)
@@ -373,35 +407,48 @@ public class Player : MonoBehaviour
             { playerSprite.sprite = currentSpriteList[7]; }
             else if (dashTimer < 0.5f)
             { playerSprite.sprite = currentSpriteList[8]; }
-                dashTimer += Time.deltaTime;
-                _playerRigidbody.constraints = dashConstraints;
-            }
-            else if (isDashing && dashTimer >= dashDuration)
-            { 
+            dashTimer += Time.deltaTime;
+            _playerRigidbody.constraints = dashConstraints;
+        }
+        else if (isDashing && dashTimer >= dashDuration)
+        {
             _playerRigidbody.constraints = normalConstraints; isDashing = false;
             dashTimer = 0;
-             _playerRigidbody.velocity = Vector2.zero; 
-            }
+            _playerRigidbody.velocity = Vector2.zero;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
-    {   
-       if (collision.collider.CompareTag("Spikes") && !Player.playerIsInvisibile)
-          {
-              GameOver();
-          }
-       if (collision.collider.CompareTag("Floor"))
-        { landed = true;  }
-        
+    {
+        if (collision.collider.CompareTag("Spikes") && !Player.playerIsInvisibile)
+        {
+            GameOver();
+        }
+        if (collision.collider.CompareTag("Floor"))
+        { landed = true; }
+
+        if (collision.collider.CompareTag("laser"))
+        { GameOver(); }
+
+
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("laser"))
+        { GameOver(); }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Respawn") && transform.position.x > lastCheckpointX)
         { lastCheckpointX = transform.position.x; lastCheckpointY = transform.position.y; Debug.Log("new checpoint"); }
-        if (collision.CompareTag("Finish")) termine = true;
+        if (collision.CompareTag("Finish"))
+        {
+            termine = true; win = true;
+        }
+
+
     }
-
-
 }
 
