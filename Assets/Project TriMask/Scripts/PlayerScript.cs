@@ -28,8 +28,8 @@ public class Player : MonoBehaviour
     [SerializeField] private List<Sprite> doubleJumpSpriteList;
     [SerializeField] private List<Sprite> xraySpriteList;
     [SerializeField] private List<Sprite> stealthSpriteList;
+
     [SerializeField] private Rigidbody2D _playerRigidbody;
-    [SerializeField] private BoxCollider2D _playerCollider;
     [SerializeField] private List<Sprite> maskSprites;
     [SerializeField] private SpriteRenderer mask1Sprite;
     [SerializeField] private SpriteRenderer mask2Sprite;
@@ -44,7 +44,7 @@ public class Player : MonoBehaviour
     private Color noFade;
     public static bool playerIsInvisibile = false;
     public bool xrayActive = false;
-    [SerializeField] private SpriteRenderer backgroundSprite;
+    [SerializeField] private List<SpriteRenderer> backgroundSprite;
     private float dashTimer = 0;
     private RigidbodyConstraints2D dashConstraints;
     private RigidbodyConstraints2D normalConstraints;
@@ -72,12 +72,14 @@ public class Player : MonoBehaviour
     private float escapeTimer = 0;
     [SerializeField] private TextMeshPro menuText;
     [SerializeField] private TextMeshPro timerText;
+    public static bool gameover = false;
 
 
 
     public void GameOver()
     {
         transform.position = new Vector3(lastCheckpointX, lastCheckpointY, transform.position.z);
+        gameover = true;
        
     }
 
@@ -136,7 +138,7 @@ public class Player : MonoBehaviour
             setModeID();
             if (Input.GetKeyDown(KeyCode.Escape))
                 pause = true;
-
+            gameover = false;
 
 
         }
@@ -260,6 +262,7 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
+                _playerRigidbody.velocity = Vector2.zero;
                 _playerRigidbody.AddForce(14 * Vector2.up, ForceMode2D.Impulse);
                 timerJump = 0;
 
@@ -361,7 +364,8 @@ public class Player : MonoBehaviour
         else if (xrayActive && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(_switchKey)))
         {
             xrayActive = false;
-            backgroundSprite.color = noFade;
+            foreach (SpriteRenderer backSprite in backgroundSprite)
+            { backSprite.color = noFade; }
             playerCam.orthographicSize /= 2;
             xrayTimer = 0;
         }
@@ -373,7 +377,8 @@ public class Player : MonoBehaviour
             else
             {
                 playerSprite.sprite = currentSpriteList[15];
-                backgroundSprite.color = fade;
+                foreach (SpriteRenderer backSprite in backgroundSprite)
+                { backSprite.color = fade; }
                 if (playerCam.orthographicSize < 10) playerCam.orthographicSize *= 2;
             }
 
@@ -420,7 +425,7 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.CompareTag("Spikes") && !Player.playerIsInvisibile)
+        if (collision.collider.CompareTag("Spikes"))
         {
             GameOver();
         }
