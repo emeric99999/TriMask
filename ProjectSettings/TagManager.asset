@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Floor
   - Spikes
+  - Top
   layers:
   - Default
   - TransparentFX

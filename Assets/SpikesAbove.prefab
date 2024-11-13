@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.93207544, g: 0.23741534, b: 0.23741534, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -194,6 +194,7 @@ MonoBehaviour:
   spikesBody: {fileID: 386056308454637746}
   spikeSpeed: 3
   hitzone: {fileID: 8518187969354194629}
+  spikesSprite: {fileID: 3883349304705745177}
 --- !u!50 &386056308454637746
 Rigidbody2D:
   serializedVersion: 4

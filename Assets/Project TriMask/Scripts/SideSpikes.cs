@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class TopSpikes : MonoBehaviour
+public class SideSpikes : MonoBehaviour
 {
 
     [SerializeField] BoxCollider2D detectionZone;
@@ -23,33 +24,25 @@ public class TopSpikes : MonoBehaviour
         
     }
     
-    private void OnTriggerEnter2D(UnityEngine.Collider2D collision)
+    private void OnTriggerExit2D(UnityEngine.Collider2D collision)
     {
-        if (collision.CompareTag("Player") && !Player.playerIsInvisibile)
+        if (collision.CompareTag("Player") && spikesSprite != null && hitzone!= null)
         {
-            spikesBody.gravityScale = spikeSpeed;
+            spikesBody.velocity = new Vector2(9f,0);
+            spikesSprite.enabled = true; hitzone.enabled = true;
         }
     }
 
 
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        if (other.CompareTag("Player") && !Player.playerIsInvisibile)
-        {
-            spikesBody.gravityScale = spikeSpeed;
-        }
-    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Floor"))
         {
-            hitzone.enabled = false; ;
-            spikesSprite.enabled = false; ;
-        }
+            spikesBody.velocity = Vector2.zero;
+            GameObject.Destroy(hitzone); GameObject.Destroy(spikesSprite); }
     }
 
-    
 
 
 
