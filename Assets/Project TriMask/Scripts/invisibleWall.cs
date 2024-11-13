@@ -7,6 +7,7 @@ public class invisibleWall : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField] SpriteRenderer wallSprite;
     [SerializeField] Camera playerCam;
+    [SerializeField] BoxCollider2D hitzone;
     private Color normalColor;
     private Color revealColor;
     void Start()
@@ -19,6 +20,7 @@ public class invisibleWall : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        hitzone.enabled = false;
         if (playerCam.orthographicSize > 6)
         { wallSprite.color = revealColor; }
         else { wallSprite.color = normalColor; }

@@ -38,6 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2429,9 +2430,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallSprite: {fileID: 453060625}
   playerCam: {fileID: 519420031}
+  hitzone: {fileID: 453060628}
 --- !u!212 &453060625 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 3883349304705745177, guid: 67b23e86787f2314180cadbc9b06bea7, type: 3}
+  m_PrefabInstance: {fileID: 507672875}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &453060628 stripped
+BoxCollider2D:
+  m_CorrespondingSourceObject: {fileID: 8518187969354194629, guid: 67b23e86787f2314180cadbc9b06bea7, type: 3}
   m_PrefabInstance: {fileID: 507672875}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &453549920
@@ -2748,12 +2755,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    m_Quality: 3
-    m_FrameInfluence: 0.1
-    m_JitterScale: 1
-    m_MipBias: 0
-    m_VarianceClampScale: 0.9
-    m_ContrastAdaptiveSharpening: 0
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -4812,9 +4819,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallSprite: {fileID: 957155586}
   playerCam: {fileID: 519420031}
+  hitzone: {fileID: 957155589}
 --- !u!212 &957155586 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 3883349304705745177, guid: 67b23e86787f2314180cadbc9b06bea7, type: 3}
+  m_PrefabInstance: {fileID: 358888425}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &957155589 stripped
+BoxCollider2D:
+  m_CorrespondingSourceObject: {fileID: 8518187969354194629, guid: 67b23e86787f2314180cadbc9b06bea7, type: 3}
   m_PrefabInstance: {fileID: 358888425}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &999660229
@@ -5124,6 +5137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallSprite: {fileID: 1022406027}
   playerCam: {fileID: 519420031}
+  hitzone: {fileID: 0}
 --- !u!1 &1040985397
 GameObject:
   m_ObjectHideFlags: 0
@@ -5502,9 +5516,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallSprite: {fileID: 1095633123}
   playerCam: {fileID: 519420031}
+  hitzone: {fileID: 1095633126}
 --- !u!212 &1095633123 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 3883349304705745177, guid: 67b23e86787f2314180cadbc9b06bea7, type: 3}
+  m_PrefabInstance: {fileID: 896308146}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &1095633126 stripped
+BoxCollider2D:
+  m_CorrespondingSourceObject: {fileID: 8518187969354194629, guid: 67b23e86787f2314180cadbc9b06bea7, type: 3}
   m_PrefabInstance: {fileID: 896308146}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1151121811
