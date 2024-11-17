@@ -53,7 +53,7 @@ public class SideSpikes : MonoBehaviour
 
     private void OnTriggerExit2D(UnityEngine.Collider2D collision)
     {
-        if (collision.CompareTag("Player") && spikesSprite != null && hitzone != null)
+        if (collision.CompareTag("Player") && !spikesSprite.enabled && !hitzone.enabled)
         {
             spikesBody.velocity = new Vector2(9f, 0);
             spikesSprite.enabled = true; hitzone.enabled = true;
