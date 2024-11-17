@@ -5137,7 +5137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallSprite: {fileID: 1022406027}
   playerCam: {fileID: 519420031}
-  hitzone: {fileID: 0}
+  hitzone: {fileID: 1022406026}
 --- !u!1 &1040985397
 GameObject:
   m_ObjectHideFlags: 0
