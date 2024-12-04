@@ -95,6 +95,8 @@ public class Player : MonoBehaviour
         dashConstraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         normalConstraints = _playerRigidbody.constraints;
         winText.text = "Escape in 2m30 !";
+        lastCheckpointX = transform.position.x;
+        lastCheckpointY = transform.position.y;
     }
     private void Update()
     {
@@ -112,6 +114,7 @@ public class Player : MonoBehaviour
 
             if (!xrayActive)
             {
+                playerCam.orthographicSize = 5;
                 if (!isDashing && !(landing && landed))
                 {
                     Move();

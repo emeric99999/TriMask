@@ -1,4 +1,5 @@
 
+
 using UnityEngine;
 
 public class TopSpikes : MonoBehaviour
@@ -21,6 +22,7 @@ public class TopSpikes : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if (Player.gameover)
         {
             transform.position = positionInitiale;
@@ -28,6 +30,16 @@ public class TopSpikes : MonoBehaviour
             spikesSprite.enabled = true;
             spikesBody.gravityScale = 0;
             spikesBody.velocity = Vector2.zero;
+        }
+
+        if (FloorSpikes.touche)
+        {
+            transform.position = positionInitiale;
+            hitzone.enabled = true;
+            spikesSprite.enabled = true;
+            spikesBody.gravityScale = 0;
+            spikesBody.velocity = Vector2.zero;
+            FloorSpikes.touche = false;
         }
     }
     

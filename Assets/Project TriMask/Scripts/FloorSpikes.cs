@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class FloorSpikes : MonoBehaviour
 {
+    public static bool touche;
     [SerializeField] Player player;
-    [SerializeField] BoxCollider2D detectionZone;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,6 +16,7 @@ public class FloorSpikes : MonoBehaviour
         if (collision.collider.CompareTag("Player"))
         {
             player.GameOver();
+            touche = true;
         }
     }
 
